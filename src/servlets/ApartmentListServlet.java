@@ -9,7 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import beans.Role;
+import beans.User;
 import dao.ApartmentDAO;
 import dao.UserDAO;
 
@@ -40,6 +43,22 @@ public class ApartmentListServlet extends HttpServlet {
         
 		request.setAttribute("apartments", apartmentDAO.findAll());
 		
+		HttpSession session = request.getSession(true);	    
+        User user = (User)session.getAttribute("currentUser");
+        
+        if(user.getRole() == Role.GOST)
+        {
+        	request.setAttribute("apartments", apartmentDAO.findActive());
+        }
+        else if(user.getRole() == Role.DOMACIN)
+        {
+        	request.setAttribute("apartments", apartmentDAO.userApartments(user));
+        }
+        else
+        {
+        	request.setAttribute("apartments", apartmentDAO.findAll());
+        }
+        
 		disp.forward(request, response);
 	}
 

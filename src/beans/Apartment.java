@@ -3,6 +3,7 @@ package beans;
 import java.awt.Image;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,8 @@ public class Apartment {
 	
 	public Apartment() {
 		// TODO Auto-generated constructor stub
+		
+		availableDates = new ArrayList<LocalDate>();
 	}
 	public void setId(Long id) {
 		this.id = id;

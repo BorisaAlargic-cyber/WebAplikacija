@@ -46,6 +46,34 @@ public class ApartmentDAO {
 		
 		return apartment;
 	}
+	public List<Apartment> findActive()
+	{
+		List<Apartment> activeApartments = new ArrayList<Apartment>();
+		for(Apartment ap : apartments.values())
+		{
+			if(ap.getStatus() != Status.ACTIVE)
+			{
+				continue;
+			}
+			
+			activeApartments.add(ap);
+		}
+		
+		return activeApartments;
+	}
+	public List<Apartment> userApartments(User u)
+	{
+		List<Apartment> userApartments = new ArrayList<Apartment>();
+		
+		for(Apartment apU : apartments.values())
+		{
+			if(apU.getHost() != null && apU.getHost().getEmail().equals(u.getEmail()))
+			{
+				userApartments.add(apU);
+			}
+		}
+		return userApartments;
+	}
 	
 	public ApartmentDAO(String contextPath) {
 		this.contextPath = contextPath;
@@ -108,6 +136,7 @@ public class ApartmentDAO {
 					apartment.setCheckInTime(checkInTime);
 					apartment.setCheckOutTime(checkOutTime);
 					apartment.setStatus(status);
+					apartment.setHost(user);
 					
 					apartments.put(id, apartment);
 				}
@@ -138,7 +167,7 @@ public class ApartmentDAO {
 				line+=ap.getRoomsCount() + ";";
 				line+=ap.getGuestCount() + ";";
 				line+=ap.getLocation().getId() + ";";
-				line+=ap.getHost().getEmail() + ";";
+				line+=ap.getHost().getUsername() + ";";
 				line+=ap.getPricePerNight() + ";";
 				line+=ap.getCheckInTime() + ";";
 				line+=ap.getCheckOutTime() + ";";

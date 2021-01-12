@@ -16,6 +16,7 @@
 		<th>Number</th>
 		<th>City</th>
 		<th>Zip Code</th>
+		<th>Add dates</th>
 	</tr>
 
     <c:forEach items="${requestScope.apartments}" var="apartment">
@@ -24,6 +25,9 @@
             <td><c:out value="${apartment.location.address.number}"/></td>
             <td><c:out value="${apartment.location.address.city}"/></td>
             <td><c:out value="${apartment.location.address.zipCode}"/></td>
+            <td>
+            	<a href="/WebProgramiranje-master/FreeApartmentDates?apartmentId=${apartment.id}">Add dates</a>
+            </td>
         </tr>
     </c:forEach>
 </table>
