@@ -2,6 +2,8 @@ package servlets;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -46,9 +48,9 @@ public class FreeApartmentDatesServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		Integer id = Integer.parseInt(request.getParameter("apartmentId"));
-		LocalDate from = LocalDate.parse(request.getParameter("dateFrom"));
-		LocalDate to = LocalDate.parse(request.getParameter("dateTo"));
+		Long id = Long.parseLong(request.getParameter("apartmentId"));
+		LocalDateTime from = LocalDateTime.parse(request.getParameter("dateFrom") + "T00:00:00"); 
+		LocalDateTime to = LocalDateTime.parse(request.getParameter("dateTo") + "T00:00:00");
 		
 		
 		ServletContext context = getServletContext();
@@ -57,11 +59,12 @@ public class FreeApartmentDatesServlet extends HttpServlet {
         ApartmentDAO apartmentDao = new ApartmentDAO(contextPath);
         Apartment apartment = apartmentDao.findByID(id);
         
-        for (LocalDate date = from; date.isBefore(to); date = date.plusDays(1))
+        for (LocalDateTime date = from; date.isBefore(to); date = date.plusDays(1))
         {
             apartment.getAvailableDates().add(date);
         }
-		
+        
+        apartmentDao.update(apartment);
 		doGet(request, response);
 	}
 

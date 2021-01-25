@@ -6,8 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.sun.xml.internal.ws.util.StringUtils;
 
 import beans.Apartment;
 import beans.ApartmentComments;
@@ -46,6 +53,14 @@ public class ApartmentDAO {
 		
 		return apartment;
 	}
+	
+	public void update(Apartment apartment) {
+		
+		apartments.put(apartment.getId(), apartment);
+		
+		saveApartments();
+	}
+	
 	public List<Apartment> findActive()
 	{
 		List<Apartment> activeApartments = new ArrayList<Apartment>();
@@ -81,10 +96,19 @@ public class ApartmentDAO {
 	}
 	
 	public Collection<Apartment> findAll() {
-		return apartments.values();
+		
+		ArrayList<Apartment> result = new ArrayList<Apartment>();
+		
+		for(Apartment a: apartments.values()) {
+			if(!a.isDeleted()) {
+				result.add(a);
+			}
+		}
+		
+		return result;
 	}
 	
-	public Apartment findByID(Integer id)
+	public Apartment findByID(Long id)
 	{
 		return apartments.get(id);
 	}
@@ -125,6 +149,21 @@ public class ApartmentDAO {
 					Location location = locationDAO.find(locationId);
 					User user = userDAO.find(userEmail);
 					
+					boolean deleted = Boolean.parseBoolean(st.nextToken().trim());
+					
+					StringTokenizer stt;
+					stt = new StringTokenizer(st.nextToken().trim(), "|");
+					List<LocalDateTime> dates = new ArrayList<LocalDateTime>();
+					while (stt.hasMoreTokens()) {
+						String dateString = stt.nextToken();
+						
+						if(dateString.equals("")) {
+							continue;
+						}
+						
+ 						dates.add(Instant.ofEpochMilli(Long.parseLong(dateString)).atZone(ZoneId.systemDefault()).toLocalDateTime());
+					}
+					
 					Apartment apartment = new Apartment();
 					
 					apartment.setId(id);
@@ -137,6 +176,8 @@ public class ApartmentDAO {
 					apartment.setCheckOutTime(checkOutTime);
 					apartment.setStatus(status);
 					apartment.setHost(user);
+					apartment.setDeleted(deleted);
+					apartment.setAvailableDates(dates);
 					
 					apartments.put(id, apartment);
 				}
@@ -172,6 +213,21 @@ public class ApartmentDAO {
 				line+=ap.getCheckInTime() + ";";
 				line+=ap.getCheckOutTime() + ";";
 				line+=ap.getStatus() + ";";
+				line+=ap.isDeleted() + ";";
+				
+				String availableDate = "";
+				
+				for(LocalDateTime date: ap.getAvailableDates()) {
+					
+					availableDate += date.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli() + "|";
+				}
+				
+				if(availableDate.equals("")) {
+					availableDate = "|";	
+				}
+				
+				line+= availableDate + ";";
+				
 				System.out.println(line);
 				writer.write(line);
 			}

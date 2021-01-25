@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,23 @@ public class UserDAO {
 			return null;
 		}
 		return user;
+	}
+	
+	public Collection<User> search(String search) {
+		
+		ArrayList<User> result = new ArrayList<>();
+		
+		for(User user: users.values()) {
+			
+			if(user.getFirstName().contains(search) ||
+					user.getLastName().contains(search)
+					|| user.getEmail().contains(search))
+			{
+				result.add(user);
+			}
+		}
+		
+		return result;
 	}
 	
 	public User find(String username) {

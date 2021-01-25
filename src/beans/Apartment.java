@@ -2,6 +2,7 @@ package beans;
 
 import java.awt.Image;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class Apartment {
 	private Integer roomsCount;
 	private Integer guestCount;
 	private Location location;
-	private List<LocalDate> availableDates;
+	private List<LocalDateTime> availableDates;
 	private Map<LocalDate, Boolean> reservedDates;
 	private User host;
 	private List<ApartmentComments> comments;
@@ -26,16 +27,24 @@ public class Apartment {
 	private Status status;
 	private List<ApartmentContent> amenities;
 	private List<Reservation> reservation;
-	
-	
-	
+	private boolean deleted;
+		
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
 	public Long getId() {
 		return id;
 	}
 
 	
 	public Apartment(Long id, ApartmentType type, Integer roomsCount, Integer guestCount, Location location,
-			List<LocalDate> availableDates, Map<LocalDate, Boolean> reservedDates, User host, List<ApartmentComments> comments,
+			List<LocalDateTime> availableDates, Map<LocalDate, Boolean> reservedDates, User host, List<ApartmentComments> comments,
 			List<Image> images, Float pricePerNight, LocalTime checkInTime, LocalTime checkOutTime, Status status,
 			List<ApartmentContent> amenities, List<Reservation> reservation) {
 		super();
@@ -60,7 +69,7 @@ public class Apartment {
 	public Apartment() {
 		// TODO Auto-generated constructor stub
 		
-		availableDates = new ArrayList<LocalDate>();
+		availableDates = new ArrayList<LocalDateTime>();
 	}
 	public void setId(Long id) {
 		this.id = id;
@@ -89,10 +98,10 @@ public class Apartment {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	public List<LocalDate> getAvailableDates() {
+	public List<LocalDateTime> getAvailableDates() {
 		return availableDates;
 	}
-	public void setAvailableDates(List<LocalDate> availableDates) {
+	public void setAvailableDates(List<LocalDateTime> availableDates) {
 		this.availableDates = availableDates;
 	}
 	public Map<LocalDate, Boolean> getReservedDates() {

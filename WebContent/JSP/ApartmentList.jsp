@@ -28,6 +28,9 @@
             <td>
             	<a href="/WebProgramiranje-master/FreeApartmentDates?apartmentId=${apartment.id}">Add dates</a>
             </td>
+            <td>
+            	<a href="/WebProgramiranje-master/DeleteApartmentServlet?apartmentId=${apartment.id}">Delete</a>
+            </td>
         </tr>
     </c:forEach>
 </table>

@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,19 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.UserDAO;
+import beans.Apartment;
+import dao.ApartmentDAO;
 
 /**
- * Servlet implementation class UserAdminServlet
+ * Servlet implementation class DeleteApartmentServlet
  */
-@WebServlet("/UserAdminServlet")
-public class UserAdminServlet extends HttpServlet {
+@WebServlet("/DeleteApartmentServlet")
+public class DeleteApartmentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public UserAdminServlet() {
+    public DeleteApartmentServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -31,23 +31,18 @@ public class UserAdminServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher disp = request.getRequestDispatcher("/JSP/UserAdmin.jsp");
-    	String search = request.getParameter("search");
+		// TODO Auto-generated method stub
+		Long id = Long.parseLong(request.getParameter("apartmentId"));
 		
-    	
 		ServletContext context = getServletContext();
         String contextPath = context.getRealPath("");
-        UserDAO userDAO = new UserDAO(contextPath);
         
-		if(search == null || search.equals("")) {
-			request.setAttribute("users", userDAO.findAll());	
-		}
-		else {
-			request.setAttribute("users", userDAO.search(search));
-		}
+        ApartmentDAO apartmentDao = new ApartmentDAO(contextPath);
+        Apartment apartment = apartmentDao.findByID(id);
+        apartment.setDeleted(true);
+        apartmentDao.update(apartment);
 		
-		
-		disp.forward(request, response);
+		response.sendRedirect("/WebProgramiranje-master/ApartmentListServlet");
 	}
 
 	/**
@@ -55,7 +50,7 @@ public class UserAdminServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		
 	}
 
 }
