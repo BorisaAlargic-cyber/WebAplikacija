@@ -52,7 +52,7 @@ public class ApartmentCommentsDAO {
 				while (st.hasMoreTokens()) {
 					Long id = Long.valueOf(st.nextToken().trim());
 					String guestCommName = st.nextToken().trim();
-					Integer apartmentID = Integer.valueOf(st.nextToken().trim());
+					Long apartmentID = Long.valueOf(st.nextToken().trim());
 					String text = st.nextToken().trim();
 					Float rate = Float.valueOf(st.nextToken().trim());
 					aComments.put(id, new ApartmentComments(id,guestCommName,apartmentDAO.findByID(apartmentID),text,rate ));

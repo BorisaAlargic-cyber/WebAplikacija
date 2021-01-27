@@ -16,6 +16,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.StringTokenizer;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 
+import beans.Ameneties;
 import beans.Apartment;
 import beans.ApartmentComments;
 import beans.ApartmentContent;
@@ -61,22 +64,84 @@ public class ApartmentDAO {
 		saveApartments();
 	}
 	
-	public List<Apartment> findActive()
+	public boolean isSearchOK(Apartment ap, String search) {
+		
+		if(search == null) {
+			return true;
+		}
+		
+		
+		return ap.getLocation().getAddress().getCity().contains(search) ||
+				ap.getHost().getFirstName().contains(search) || ap.getHost().getLastName().contains(search) ||
+				ap.getLocation().getAddress().getStreet().contains(search);
+	}
+	
+	public void sortApartments(List<Apartment> aparmnets, String sort) {
+		
+		if(sort == null)
+		{
+			return;
+		}
+		
+		
+		if(sort.equals("CITY")) {
+			Collections.sort(aparmnets, new Comparator<Apartment>() {
+			    @Override
+			    public int compare(Apartment o1, Apartment o2) {
+			        return o1.getLocation().getAddress().getCity().compareTo(o2.getLocation().getAddress().getCity());
+			    }
+			});
+		}
+		if(sort.equals("ADDRESS")) {
+			Collections.sort(aparmnets, new Comparator<Apartment>() {
+			    @Override
+			    public int compare(Apartment o1, Apartment o2) {
+			        return o1.getLocation().getAddress().getStreet().compareTo(o2.getLocation().getAddress().getStreet());
+			    }
+			});
+		}
+		if(sort.equals("FIRST_NAME")) {
+			Collections.sort(aparmnets, new Comparator<Apartment>() {
+			    @Override
+			    public int compare(Apartment o1, Apartment o2) {
+			        return o1.getHost().getFirstName().compareTo(o2.getHost().getFirstName());
+			    }
+			});
+		}
+		if(sort.equals("LAST_NAME")) {
+			Collections.sort(aparmnets, new Comparator<Apartment>() {
+			    @Override
+			    public int compare(Apartment o1, Apartment o2) {
+			        return o1.getHost().getLastName().compareTo(o2.getHost().getLastName());
+			    }
+			});
+		}
+	}
+	
+	
+	public List<Apartment> findActiveAndSearch(String search, String sort)
 	{
 		List<Apartment> activeApartments = new ArrayList<Apartment>();
 		for(Apartment ap : apartments.values())
 		{
-			if(ap.getStatus() != Status.ACTIVE)
+			if(ap.getStatus() != Status.ACTIVE || ap.isDeleted() == true)
 			{
 				continue;
 			}
 			
-			activeApartments.add(ap);
+			if(isSearchOK(ap, search))
+			{
+				activeApartments.add(ap);	
+			}
 		}
+		
+		sortApartments(activeApartments, sort);
 		
 		return activeApartments;
 	}
-	public List<Apartment> userApartments(User u)
+	
+	
+	public List<Apartment> userApartments(User u, String search, String sort)
 	{
 		List<Apartment> userApartments = new ArrayList<Apartment>();
 		
@@ -84,9 +149,15 @@ public class ApartmentDAO {
 		{
 			if(apU.getHost() != null && apU.getHost().getEmail().equals(u.getEmail()))
 			{
-				userApartments.add(apU);
+				if(isSearchOK(apU, search))
+				{
+					userApartments.add(apU);	
+				}
 			}
 		}
+		
+		sortApartments(userApartments, sort);
+		
 		return userApartments;
 	}
 	
@@ -96,14 +167,26 @@ public class ApartmentDAO {
 	}
 	
 	public Collection<Apartment> findAll() {
+		return findAll(null, null);
+	}
+	
+	public Collection<Apartment> findAll(String search, String sort) {
 		
 		ArrayList<Apartment> result = new ArrayList<Apartment>();
 		
 		for(Apartment a: apartments.values()) {
 			if(!a.isDeleted()) {
-				result.add(a);
+				
+				if(isSearchOK(a, search))
+				{
+					result.add(a);	
+				}
+				
 			}
 		}
+		
+		
+		sortApartments(result, sort);
 		
 		return result;
 	}
@@ -164,6 +247,22 @@ public class ApartmentDAO {
  						dates.add(Instant.ofEpochMilli(Long.parseLong(dateString)).atZone(ZoneId.systemDefault()).toLocalDateTime());
 					}
 					
+					StringTokenizer sttt;
+					sttt = new StringTokenizer(st.nextToken().trim(), "|");
+					ArrayList<Ameneties> ameneties = new ArrayList<Ameneties>();
+					AmenetiesDAO amenetiesDAO = new AmenetiesDAO(this.contextPath);
+					while (sttt.hasMoreTokens()) {
+						String amString = sttt.nextToken();
+						
+						if(amString.equals("")) {
+							continue;
+						}
+						
+						Long idA = Long.parseLong(amString);
+						
+ 						ameneties.add(amenetiesDAO.findByID(idA));
+					}
+					
 					Apartment apartment = new Apartment();
 					
 					apartment.setId(id);
@@ -178,7 +277,7 @@ public class ApartmentDAO {
 					apartment.setHost(user);
 					apartment.setDeleted(deleted);
 					apartment.setAvailableDates(dates);
-					
+					apartment.setAmenities(ameneties);
 					apartments.put(id, apartment);
 				}
 				
@@ -227,6 +326,19 @@ public class ApartmentDAO {
 				}
 				
 				line+= availableDate + ";";
+				
+				
+				String amenetiesString = "";
+				
+				for(Ameneties am: ap.getAmenities()) {
+					amenetiesString += ap.getId() + "|";
+				}
+				
+				if(amenetiesString.equals("")) {
+					amenetiesString = "|";	
+				}
+				
+				line+= amenetiesString + ";";
 				
 				System.out.println(line);
 				writer.write(line);

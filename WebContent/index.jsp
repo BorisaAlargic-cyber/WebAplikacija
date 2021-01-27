@@ -14,6 +14,8 @@
 			<a href="/WebProgramiranje-master/AddApartmentServlet">Add Apartment</a>
 			<a href="/WebProgramiranje-master/ApartmentListServlet">Apartment List</a>
 			<a href="/WebProgramiranje-master/ChangePasswordServlet">Izmena passworda</a>
+			<a href="/WebProgramiranje-master/AmenetiesListServlet">AmenetiesList</a>
+			<a href="/WebProgramiranje-master/AddAmenetiesServlet">Add Ameneties</a>
 			<a href="/WebProgramiranje-master/UserAdminServlet">Users</a>
 		    <a href="/WebProgramiranje-master/LogoutServlet">Logout</a>
 	    </c:when>
@@ -23,17 +25,40 @@
 	    </c:otherwise>
 			
 	</c:choose>
+	
+	
 </div>
-
-<h3>WebShop</h3>
-
-<p>
-<a href="LoginServlet"><b>Uloguj se</b></a> Demonstracija MVC Model 2 tehnologije.
-Servlet <code>LoginServlet</code> obavlja posao dispečera. Svaka operacija prijavljivanja
-ili odjavljivanja na sistem ide preko ovog servleta. Ako je korisnik uneo odgovarajuće
-korisničko ime i šifru (proba/proba) prijavljivanje na sistem je uspelo i servlet
-redirektuje stranicu na <code>results.jsp</code>.
-</p>
-
+<form action="HomeServlet" method="get">
+	<input type="text" name="search">
+	<select name="sort">
+		<option value="CITY">City</option>
+		<option value="ADDRESS">Address</option>
+		<option value="FIRST_NAME">First Name</option>
+		<option value="LAST_NAME">Last Name</option>
+	</select>
+	<input type="submit" value="Search">
+</form>
+<div>
+<c:forEach items="${requestScope.apartments}" var="apartment">
+        <table>
+	        <tr>
+	            <td><c:out value="${apartment.location.address.street}"/></td> 
+	            <td><c:out value="${apartment.location.address.number}"/></td>
+	            <td><c:out value="${apartment.location.address.city}"/></td>
+	            <td><c:out value="${apartment.location.address.zipCode}"/></td>
+	            <td><c:out value="${apartment.status}"/></td>
+	        </tr>
+	        <tr>
+	        	<td colspan="5">
+	        		<c:forEach items="${requestScope.comments}" var="comment">
+	        			<p>
+	        				<c:out value="${comment.text}"/>
+	        			</p>
+	        		</c:forEach>
+	        	</td>
+	        </tr>
+        </table>
+    </c:forEach>
+</div>
 </body>
 </html>

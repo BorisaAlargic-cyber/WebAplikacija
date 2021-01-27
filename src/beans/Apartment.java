@@ -25,10 +25,36 @@ public class Apartment {
 	private LocalTime checkInTime;
 	private LocalTime checkOutTime;
 	private Status status;
-	private List<ApartmentContent> amenities;
+	private List<Ameneties> amenities;
 	private List<Reservation> reservation;
 	private boolean deleted;
 		
+	public void addAmenities(Ameneties amenetie) {
+		
+		if(amenitiesExists(amenetie)) {
+			return;
+		}
+		
+		if(amenities == null) {
+			amenities = new ArrayList<Ameneties>();
+		}
+		
+		amenities.add(amenetie);
+		
+	}
+	
+	public boolean amenitiesExists(Ameneties amenetie) {
+		
+		for(Ameneties am: amenities) {
+			if(am.getId().equals(amenetie.getId())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
 	public boolean isDeleted() {
 		return deleted;
 	}
@@ -46,7 +72,7 @@ public class Apartment {
 	public Apartment(Long id, ApartmentType type, Integer roomsCount, Integer guestCount, Location location,
 			List<LocalDateTime> availableDates, Map<LocalDate, Boolean> reservedDates, User host, List<ApartmentComments> comments,
 			List<Image> images, Float pricePerNight, LocalTime checkInTime, LocalTime checkOutTime, Status status,
-			List<ApartmentContent> amenities, List<Reservation> reservation) {
+			List<Ameneties> amenities, List<Reservation> reservation) {
 		super();
 		this.id = id;
 		this.type = type;
@@ -153,10 +179,10 @@ public class Apartment {
 	public void setComments(List<ApartmentComments> comments) {
 		this.comments = comments;
 	}
-	public List<ApartmentContent> getAmenities() {
+	public List<Ameneties> getAmenities() {
 		return amenities;
 	}
-	public void setAmenities(List<ApartmentContent> amenities) {
+	public void setAmenities(List<Ameneties> amenities) {
 		this.amenities = amenities;
 	}
 	public List<Reservation> getReservation() {

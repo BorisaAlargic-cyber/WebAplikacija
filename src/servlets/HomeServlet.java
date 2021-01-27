@@ -9,24 +9,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import beans.Role;
-import beans.User;
 import dao.ApartmentDAO;
 import dao.UserDAO;
 
 /**
- * Servlet implementation class ApartmentListServlet
+ * Servlet implementation class HomeServlet
  */
-@WebServlet("/ApartmentListServlet")
-public class ApartmentListServlet extends HttpServlet {
+@WebServlet("/HomeServlet")
+public class HomeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ApartmentListServlet() {
+    public HomeServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,33 +32,20 @@ public class ApartmentListServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher disp = request.getRequestDispatcher("/JSP/ApartmentList.jsp");
+		// TODO Auto-generated method stub
 		String search = request.getParameter("search");
-		String sort = request.getParameter("sort");
+    	String sort = request.getParameter("sort");
+		
     	
 		ServletContext context = getServletContext();
         String contextPath = context.getRealPath("");
-        ApartmentDAO apartmentDAO = new ApartmentDAO(contextPath);
+        ApartmentDAO apartment = new ApartmentDAO(contextPath);
         
-		request.setAttribute("apartments", apartmentDAO.findAll());
-		
-		HttpSession session = request.getSession(true);	    
-        User user = (User)session.getAttribute("currentUser");
+        request.setAttribute("apartments", apartment.findActiveAndSearch(search, sort));
         
-        if(user.getRole() == Role.GOST)
-        {
-        	request.setAttribute("apartments", apartmentDAO.findActiveAndSearch(search,sort));
-        }
-        else if(user.getRole() == Role.DOMACIN)
-        {
-        	request.setAttribute("apartments", apartmentDAO.userApartments(user, search,sort));
-        }
-        else
-        {
-        	request.setAttribute("apartments", apartmentDAO.findAll(search,sort));
-        }
-        
-		disp.forward(request, response);
+        RequestDispatcher disp = request.getRequestDispatcher("/index.jsp");
+        disp.forward(request, response);
+	
 	}
 
 	/**
