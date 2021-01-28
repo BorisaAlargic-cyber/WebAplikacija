@@ -1,6 +1,7 @@
 package beans;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Reservation {
 	private Long id;
@@ -11,6 +12,8 @@ public class Reservation {
 	private String messageAfterReservation;
 	private User guest;
 	private StatusOfReservation status;
+	
+	public Reservation() {}
 	
 	public Reservation(Apartment apartment, LocalDate firstDayOfReservation, Integer numberOfNIghts, Float finalPrice,
 			String messageAfterReservation, User guest, StatusOfReservation status,Long id) {

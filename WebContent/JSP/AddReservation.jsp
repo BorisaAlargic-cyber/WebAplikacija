@@ -37,21 +37,42 @@
 			
 	</c:choose>
 </div>
+<form action="/WebProgramiranje-master/AddReservationServlet" method="POST">
+
 	<table>
 		<tr>
-			<th>Name</th>
+			<td>
+				Apartment
+			</td>
+			<td>
+				<select name="apartmentId">
+					<c:forEach items="${requestScope.apartments}" var="apartment">
+						<option value="${apartment.id}">${apartment.location.address.street}</option>
+					</c:forEach>
+				</select>
+			</td>
 		</tr>
-		<c:forEach items="${requestScope.ameneties}" var="amenetie">
-			<tr>
-				<td><c:out value="${amenetie.name}"/></td>
-				<td>
-					<a href="/WebProgramiranje-master/EditAmenetieServlet?amenetiesId=${amenetie.id}">Edit</a>
-				</td>
-				<td>
-					<a href="/WebProgramiranje-master/DeleteAmenetieServlet?amenetiesId=${amenetie.id}">Delete</a>
-				</td>
-			</tr>
-		</c:forEach>
+		<tr>
+			<td>Start date</td>
+			<td><input type="date" name ="startDate" required/></td>
+		</tr>
+		<tr>
+			<td>Night Number</td>
+			<td><input type="number" name ="nightNumber" required/></td>
+		</tr>
+		<tr>
+			<td>Message</td>
+			<td><input type="text" name="message" required="required"></td>
+		</tr>
+		
+		<tr>
+			<td>
+				<input type="submit" value="Reserve">
+			</td>
+		</tr>
 	</table>
+
+</form>
+
 </body>
 </html>

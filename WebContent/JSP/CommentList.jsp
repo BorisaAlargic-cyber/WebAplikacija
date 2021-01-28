@@ -40,16 +40,28 @@
 	<table>
 		<tr>
 			<th>Name</th>
+			<th>Comment</th>
+			<th>Rate</th>
+			<th>Published</th>
 		</tr>
-		<c:forEach items="${requestScope.ameneties}" var="amenetie">
+		<c:forEach items="${requestScope.comments}" var="comment">
 			<tr>
-				<td><c:out value="${amenetie.name}"/></td>
-				<td>
-					<a href="/WebProgramiranje-master/EditAmenetieServlet?amenetiesId=${amenetie.id}">Edit</a>
-				</td>
-				<td>
-					<a href="/WebProgramiranje-master/DeleteAmenetieServlet?amenetiesId=${amenetie.id}">Delete</a>
-				</td>
+				<td><c:out value="${comment.guestCommName}"/></td>
+				<td><c:out value="${comment.text}"/></td>
+				<td><c:out value="${comment.rate}"/></td>
+				<td><c:out value="${comment.approved}"/></td>
+				<c:choose>
+					<c:when test="${sessionScope.currentUser.role == 'DOMACIN' && comment.approved == 'false'}">
+						<td>
+							<a href="/WebProgramiranje-master/ChangeCommentServlet?commentId=${comment.id}&state=true">Publish</a>
+						</td>
+					</c:when>
+					<c:when test="${sessionScope.currentUser.role == 'DOMACIN' && comment.approved == 'true'}">
+						<td>
+							<a href="/WebProgramiranje-master/ChangeCommentServlet?commentId=${comment.id}&state=fasle">Unpublish</a>
+						</td>
+					</c:when>
+				</c:choose>
 			</tr>
 		</c:forEach>
 	</table>

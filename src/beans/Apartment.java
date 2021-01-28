@@ -29,6 +29,22 @@ public class Apartment {
 	private List<Reservation> reservation;
 	private boolean deleted;
 		
+	public void removeAmenities(Ameneties amenetie) {
+		
+		Ameneties am = null;
+		
+		for(Ameneties a: amenities) {
+			if(a.getId().equals(amenetie.getId())) {
+				am = a;
+			}
+		}
+		
+		if(am != null) {
+			amenities.remove(am);
+		}
+		
+	}
+	
 	public void addAmenities(Ameneties amenetie) {
 		
 		if(amenitiesExists(amenetie)) {
@@ -46,6 +62,12 @@ public class Apartment {
 	public boolean amenitiesExists(Ameneties amenetie) {
 		
 		for(Ameneties am: amenities) {
+			
+			if(am == null)
+			{
+				continue;
+			}
+			
 			if(am.getId().equals(amenetie.getId())) {
 				return true;
 			}

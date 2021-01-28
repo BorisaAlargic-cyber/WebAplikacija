@@ -85,6 +85,10 @@ public class User implements Serializable {
 	public Role getRole() {
 		return role;
 	}
+	
+	public String getRoleString() {
+		return role.toString();
+	}
 
 	public void setRole(Role role) {
 		this.role = role;

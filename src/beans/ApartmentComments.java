@@ -6,15 +6,26 @@ public class ApartmentComments {
 	private Apartment apartmant;
 	private String text;
 	private Float rate;
+	private boolean approved;
 	
 	
-	public ApartmentComments(Long id,String guestCommName, Apartment apartmant, String text, Float rate) {
+	public ApartmentComments(Long id,String guestCommName, Apartment apartmant, String text, Float rate, boolean approved) {
 		super();
 		this.id=id;
 		this.guestCommName = guestCommName;
 		this.apartmant = apartmant;
 		this.text = text;
 		this.rate = rate;
+		this.approved = approved;
+	}
+	
+	public ApartmentComments(String guestCommName, Apartment apartmant, String text, Float rate, boolean approved) {
+		super();
+		this.guestCommName = guestCommName;
+		this.apartmant = apartmant;
+		this.text = text;
+		this.rate = rate;
+		this.approved = approved;
 	}
 
 
@@ -55,6 +66,25 @@ public class ApartmentComments {
 
 	public void setRate(Float rate) {
 		this.rate = rate;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public boolean isApproved() {
+		return approved;
+	}
+
+
+	public void setApproved(boolean approved) {
+		this.approved = approved;
 	}
 
 

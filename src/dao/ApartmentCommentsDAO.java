@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,51 @@ public class ApartmentCommentsDAO {
 		return aComments.values();
 	}
 	
+	public void update(ApartmentComments com) {
+		
+		aComments.put(com.getId(), com);
+		
+		saveApartmentComments();
+	}
 	
+	public Collection<ApartmentComments> findAll(Long id) {
+		
+		ArrayList<ApartmentComments> result = new ArrayList<ApartmentComments>();
+		
+		for(ApartmentComments com: aComments.values()) {
+			
+			if(com.getApartmant().getId().equals(id)) {
+				result.add(com);
+			}
+		}
+		
+		return result;
+	}
+	
+	public ArrayList<ApartmentComments> findAllPublic(Long id) {
+		
+		ArrayList<ApartmentComments> result = new ArrayList<ApartmentComments>();
+		
+		for(ApartmentComments com: aComments.values()) {
+			
+			if(com.getApartmant().getId().equals(id) && com.isApproved()) {
+				result.add(com);
+			}
+		}
+		
+		return result;
+	}
+	
+	public void add(ApartmentComments com) {
+		
+		Long id = nextId();
+		
+		com.setId(id);
+		
+		aComments.put(id, com);
+		saveApartmentComments();
+		
+	}
 
 	private void loadApartmentComments(String contextPath) {
 		BufferedReader in = null;
@@ -51,11 +96,12 @@ public class ApartmentCommentsDAO {
 				st = new StringTokenizer(line, ";");
 				while (st.hasMoreTokens()) {
 					Long id = Long.valueOf(st.nextToken().trim());
-					String guestCommName = st.nextToken().trim();
-					Long apartmentID = Long.valueOf(st.nextToken().trim());
-					String text = st.nextToken().trim();
+					Long appartmentId = Long.valueOf(st.nextToken().trim());
 					Float rate = Float.valueOf(st.nextToken().trim());
-					aComments.put(id, new ApartmentComments(id,guestCommName,apartmentDAO.findByID(apartmentID),text,rate ));
+					String text = st.nextToken().trim();
+					boolean approved = Boolean.parseBoolean(st.nextToken().trim());
+					String guestCommName = st.nextToken().trim();
+					aComments.put(id, new ApartmentComments(id,guestCommName,apartmentDAO.findByID(appartmentId),text,rate, approved ));
 				}
 				
 			}
@@ -79,9 +125,11 @@ public class ApartmentCommentsDAO {
 			for(ApartmentComments aC : aComments.values())
 			{
 				String line = "";
+				line+=aC.getId() + ";";
 				line+=aC.getApartmant().getId() + ";";
 				line+=aC.getRate() + ";";
 				line+=aC.getText() + ";";
+				line+=aC.isApproved() + ";";
 				line+=aC.getGuestCommName() + "\n";
 				System.out.println(line);
 				writer.write(line);
@@ -92,4 +140,23 @@ public class ApartmentCommentsDAO {
 			e.printStackTrace();
 		}
 	}
+	
+private Long nextId() {
+		
+		Long id = 1L;
+		
+		for(Long currentId : aComments.keySet())
+		{
+			if(currentId > id) {
+				id = currentId;
+			}
+		}
+		
+		return id + 1;
+	}
+
+public ApartmentComments findByID(Long id)
+{
+	return aComments.get(id);
+}
 }

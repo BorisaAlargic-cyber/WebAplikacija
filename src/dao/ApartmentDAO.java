@@ -119,6 +119,41 @@ public class ApartmentDAO {
 	}
 	
 	
+	
+	public List<Apartment> findActiveAndSearchFilter(String search, String sort, Integer priceFrom, Integer priceTo,
+			Integer roomFrom, Integer roomTo, Integer person)
+	{
+		List<Apartment> activeApartments = new ArrayList<Apartment>();
+		for(Apartment ap : apartments.values())
+		{
+			if(ap.getStatus() != Status.ACTIVE || ap.isDeleted() == true)
+			{
+				continue;
+			}
+			
+			if(ap.getPricePerNight() < priceFrom || ap.getPricePerNight() > priceTo) {
+				continue;
+			}
+			
+			if(ap.getRoomsCount() < roomFrom || ap.getRoomsCount() > roomTo) {
+				continue;
+			}
+			
+			if(ap.getGuestCount() != person) {
+				continue;
+			}
+			
+			if(isSearchOK(ap, search))
+			{
+				activeApartments.add(ap);	
+			}
+		}
+		
+		sortApartments(activeApartments, sort);
+		
+		return activeApartments;
+	}
+	
 	public List<Apartment> findActiveAndSearch(String search, String sort)
 	{
 		List<Apartment> activeApartments = new ArrayList<Apartment>();
@@ -330,9 +365,12 @@ public class ApartmentDAO {
 				
 				String amenetiesString = "";
 				
-				for(Ameneties am: ap.getAmenities()) {
-					amenetiesString += ap.getId() + "|";
+				if(ap.getAmenities() != null) {
+					for(Ameneties am: ap.getAmenities()) {
+						amenetiesString += am.getId() + "|";
+					}	
 				}
+				
 				
 				if(amenetiesString.equals("")) {
 					amenetiesString = "|";	

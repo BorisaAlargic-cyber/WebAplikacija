@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-        <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-    
+    <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <HEAD>
@@ -37,21 +36,35 @@
 			
 	</c:choose>
 </div>
-	<table>
-		<tr>
-			<th>Name</th>
-		</tr>
-		<c:forEach items="${requestScope.ameneties}" var="amenetie">
-			<tr>
-				<td><c:out value="${amenetie.name}"/></td>
-				<td>
-					<a href="/WebProgramiranje-master/EditAmenetieServlet?amenetiesId=${amenetie.id}">Edit</a>
-				</td>
-				<td>
-					<a href="/WebProgramiranje-master/DeleteAmenetieServlet?amenetiesId=${amenetie.id}">Delete</a>
-				</td>
-			</tr>
-		</c:forEach>
+	<h1>Add Apartment</h1>
+
+<form action="/WebProgramiranje-master/AddCommentServlet" method="POST">
+<input type="hidden" name="apartmentId" value="${requestScope.apartmentId}">
+<table>
+	<tr>
+		<td>Rate</td>
+		<td>
+			<select name="rate" required>
+	  			<option value="1">1</option>
+	  			<option value="2">2</option>
+	  			<option value="3">3</option>
+	  			<option value="4">4</option>
+	  			<option value="5">5</option>
+			</select>
+		</td>		
+	</tr>
+	<tr>
+		<td>Name</td>
+		<td><input type="text" name ="name"required/></td>
+	</tr>
+	<tr>
+		<td>Comment</td>
+		<td><input type="text" name ="comment" required/></td>
+	</tr>		
+	<tr>
+		<td><input type="submit" value="Add"></td>	
+	</tr>
 	</table>
+	</form>
 </body>
 </html>
